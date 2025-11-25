@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 /**
  * DTO (Data Transfer Object) para exponer datos de Dummy en la capa web.
  *
@@ -24,9 +27,11 @@ public class DummyDto {
     /** Campo ejemplo para demostrar el flujo de datos */
     private String dummy;
 
-    private Double DNI;
+    private Long DNI;
 
     private String email;
 
-    private String Tel;
+    private Long Tel;
+
+    private LocalDate Fecha_Nac;
 }
