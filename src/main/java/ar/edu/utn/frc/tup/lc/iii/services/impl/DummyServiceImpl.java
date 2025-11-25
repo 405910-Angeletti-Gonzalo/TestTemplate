@@ -45,9 +45,9 @@ public class DummyServiceImpl implements DummyService {
         DummyEntitie dummyEntitie = new DummyEntitie();
         List<DummyEntitie> dummyEntities = dummyRepository.findAll();
         boolean aux = false;
-        for (int i = 0; i < dummyEntities.size(); i++) {
-            if (Objects.equals(dummyEntities.get(i).getDni(), dni)){
-                dummyEntitie = dummyEntities.get(i);
+        for (DummyEntitie dummyEntity : dummyEntities) {
+            if (Objects.equals(dummyEntity.getDni(), dni)) {
+                dummyEntitie = dummyEntity;
                 aux = true;
             }
         }
@@ -121,13 +121,12 @@ public class DummyServiceImpl implements DummyService {
         if (id == null){
             List<DummyEntitie>  dummyEntities = dummyRepository.findAll();
             DummyEntitie dummyEntitie;
-            for (int i = 0; i < dummyEntities.size(); i++) {
-                dummyEntitie = dummyEntities.get(i);
-                if (Objects.equals(dummyEntitie.getDummy(), dummy.getDummy())){
+            for (DummyEntitie dummyEntity : dummyEntities) {
+                dummyEntitie = dummyEntity;
+                if (Objects.equals(dummyEntitie.getDummy(), dummy.getDummy())) {
                     // Asignamos el id encontrado al modelo recibido, para devolverlo completo
                     dummy.setId(dummyEntitie.getId());
-                }
-                else {
+                } else {
                     aux++;
                 }
             }
@@ -156,12 +155,11 @@ public class DummyServiceImpl implements DummyService {
         if (id == null){
             List<DummyEntitie>  dummyEntities = dummyRepository.findAll();
             DummyEntitie dummyEntitie;
-            for (int i = 0; i < dummyEntities.size(); i++) {
-                dummyEntitie = dummyEntities.get(i);
-                if (Objects.equals(dummyEntitie.getDummy(), dummy.getDummy())){
+            for (DummyEntitie dummyEntity : dummyEntities) {
+                dummyEntitie = dummyEntity;
+                if (Objects.equals(dummyEntitie.getDummy(), dummy.getDummy())) {
                     dummyListResponse.add(modelMapper.map(dummyEntitie, Dummy.class));
-                }
-                else {
+                } else {
                     aux++;
                 }
             }
