@@ -42,21 +42,25 @@ public class DummyServiceImpl implements DummyService {
 
     @Override
     public Dummy getDummyByDNI(Long dni) {
-        DummyEntitie dummyEntitie = new DummyEntitie();
-        List<DummyEntitie> dummyEntities = dummyRepository.findAll();
-        boolean aux = false;
-        for (DummyEntitie dummyEntity : dummyEntities) {
-            if (Objects.equals(dummyEntity.getDni(), dni)) {
-                dummyEntitie = dummyEntity;
-                aux = true;
-            }
-        }
-        if (!aux){
+        DummyEntitie dummyEntitie = getDummyEntitie(dni);
+        if (dummyEntitie == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El dummy DNI "+ dni +" no se encuentra");
         }
         else {
             return modelMapper.map(dummyEntitie, Dummy.class);
         }
+    }
+
+    private DummyEntitie getDummyEntitie(Long dni) {
+        DummyEntitie dummyEntitie = null;
+        List<DummyEntitie> dummyEntities = dummyRepository.findAll();
+
+        for (DummyEntitie dummyEntity : dummyEntities) {
+            if (Objects.equals(dummyEntity.getDni(), dni)) {
+                dummyEntitie = dummyEntity;
+            }
+        }
+        return dummyEntitie;
     }
 
     /**
@@ -78,9 +82,13 @@ public class DummyServiceImpl implements DummyService {
     @Override
     public Dummy createDummy(Dummy dummy) {
         if (dummy.getDni() < 100000000) {
-            DummyEntitie dummyEntitie = modelMapper.map(dummy, DummyEntitie.class);
-            dummyRepository.save(dummyEntitie);
-            return modelMapper.map(dummyEntitie, Dummy.class);
+            if (getDummyEntitie(dummy.getDni())== null) {
+                DummyEntitie dummyEntitie = modelMapper.map(dummy, DummyEntitie.class);
+                dummyRepository.save(dummyEntitie);
+                return modelMapper.map(dummyEntitie, Dummy.class);
+            }
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Ya existe un Dummy con DNI " + dummy.getDni());
+
         }
         else {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "El dummy tiene el DNI demasiado largo");
