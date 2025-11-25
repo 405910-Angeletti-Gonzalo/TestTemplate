@@ -23,4 +23,10 @@ public class DummyDto {
 
     /** Campo ejemplo para demostrar el flujo de datos */
     private String dummy;
+
+    private Double DNI;
+
+    private String email;
+
+    private String Tel;
 }

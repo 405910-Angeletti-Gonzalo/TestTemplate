@@ -27,4 +27,10 @@ public class DummyEntitie {
 
     /** Campo de ejemplo persistido en la base de datos */
     private String dummy;
+
+    private Double DNI;
+
+    private String email;
+
+    private String Tel;
 }

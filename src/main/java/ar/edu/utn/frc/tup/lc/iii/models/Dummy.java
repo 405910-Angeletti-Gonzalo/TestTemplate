@@ -17,5 +17,12 @@ public class Dummy {
     private Long id;
     /** Atributo demostrativo para el ejemplo */
     private String dummy;
+
+    private Double DNI;
+
+    private String email;
+
+    private String Tel;
+
 }
 
