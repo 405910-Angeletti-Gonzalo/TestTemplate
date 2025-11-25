@@ -4,7 +4,6 @@ import ar.edu.utn.frc.tup.lc.iii.entities.DummyEntitie;
 import ar.edu.utn.frc.tup.lc.iii.models.Dummy;
 import ar.edu.utn.frc.tup.lc.iii.repositories.DummyRepository;
 import ar.edu.utn.frc.tup.lc.iii.services.DummyService;
-import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,8 +36,27 @@ public class DummyServiceImpl implements DummyService {
     @Override
     public Dummy getDummy(Long id) {
         DummyEntitie ent = dummyRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Dummy " + id + " no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El dummy id "+ id +" no se encuentra"));
         return modelMapper.map(ent, Dummy.class);
+    }
+
+    @Override
+    public Dummy getDummyByDNI(Long dni) {
+        DummyEntitie dummyEntitie = new DummyEntitie();
+        List<DummyEntitie> dummyEntities = dummyRepository.findAll();
+        boolean aux = false;
+        for (int i = 0; i < dummyEntities.size(); i++) {
+            if (Objects.equals(dummyEntities.get(i).getDni(), dni)){
+                dummyEntitie = dummyEntities.get(i);
+                aux = true;
+            }
+        }
+        if (!aux){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El dummy DNI "+ dni +" no se encuentra");
+        }
+        else {
+            return modelMapper.map(dummyEntitie, Dummy.class);
+        }
     }
 
     /**
@@ -59,9 +77,14 @@ public class DummyServiceImpl implements DummyService {
      */
     @Override
     public Dummy createDummy(Dummy dummy) {
-        DummyEntitie dummyEntitie = modelMapper.map(dummy, DummyEntitie.class);
-        dummyRepository.save(dummyEntitie);
-        return modelMapper.map(dummyEntitie, Dummy.class);
+        if (dummy.getDni() < 100000000) {
+            DummyEntitie dummyEntitie = modelMapper.map(dummy, DummyEntitie.class);
+            dummyRepository.save(dummyEntitie);
+            return modelMapper.map(dummyEntitie, Dummy.class);
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "El dummy tiene el DNI demasiado largo");
+        }
     }
 
     /**

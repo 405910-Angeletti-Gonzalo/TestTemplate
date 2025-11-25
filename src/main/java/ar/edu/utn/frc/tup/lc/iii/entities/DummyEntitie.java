@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Entidad JPA que representa la tabla de persistencia para Dummy.
@@ -31,11 +30,11 @@ public class DummyEntitie {
     /** Campo de ejemplo persistido en la base de datos */
     private String dummy;
 
-    private Long DNI;
+    private Long dni;
 
     private String email;
 
-    private Long Tel;
+    private Long tel;
 
-    private LocalDate Fecha_Nac;
+    private LocalDate fecha_Nac;
 }

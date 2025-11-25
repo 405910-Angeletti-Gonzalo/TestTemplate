@@ -18,6 +18,8 @@ public interface DummyService {
     /** Obtiene un Dummy por id o lanza excepción si no existe. */
     Dummy getDummy (Long id);
 
+    Dummy getDummyByDNI(Long DNI);
+
     /** Devuelve todos los Dummys. */
     List<Dummy> getDummyList();
 

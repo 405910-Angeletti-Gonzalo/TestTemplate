@@ -69,6 +69,15 @@ public class DummyController {
     }
 
     /**
+     * Obtiene un Dummy por su DNI.
+     */
+    @GetMapping("/dni/{DNI}")
+    public ResponseEntity<DummyDto> getDummyByDNI(@PathVariable Long DNI){
+        DummyDto dummy = modelMapper.map(dummyService.getDummyByDNI(DNI), DummyDto.class);
+        return ResponseEntity.ok(dummy);
+    }
+
+    /**
      * Devuelve dummys filtrados por campos del DTO.
      * Nota: este endpoint usa GET con body, considerar POST para filtros complejos.
      */
