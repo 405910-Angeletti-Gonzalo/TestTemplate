@@ -42,7 +42,7 @@ public class DummyServiceImpl implements DummyService {
 
     @Override
     public Dummy getDummyByDNI(Long dni) {
-        DummyEntitie dummyEntitie = getDummyEntitie(dni);
+        DummyEntitie dummyEntitie = getDummyEntitieByDni(dni);
         if (dummyEntitie == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El dummy DNI "+ dni +" no se encuentra");
         }
@@ -50,13 +50,27 @@ public class DummyServiceImpl implements DummyService {
             return modelMapper.map(dummyEntitie, Dummy.class);
         }
     }
+    
+    
 
-    private DummyEntitie getDummyEntitie(Long dni) {
+    private DummyEntitie getDummyEntitieByDni(Long dni) {
         DummyEntitie dummyEntitie = null;
         List<DummyEntitie> dummyEntities = dummyRepository.findAll();
 
         for (DummyEntitie dummyEntity : dummyEntities) {
             if (Objects.equals(dummyEntity.getDni(), dni)) {
+                dummyEntitie = dummyEntity;
+            }
+        }
+        return dummyEntitie;
+    }
+
+    private DummyEntitie getDummyEntitieByMail(String mail) {
+        DummyEntitie dummyEntitie = null;
+        List<DummyEntitie> dummyEntities = dummyRepository.findAll();
+
+        for (DummyEntitie dummyEntity : dummyEntities) {
+            if (Objects.equals(dummyEntity.getEmail(), mail)) {
                 dummyEntitie = dummyEntity;
             }
         }
@@ -82,17 +96,25 @@ public class DummyServiceImpl implements DummyService {
     @Override
     public Dummy createDummy(Dummy dummy) {
         if (dummy.getDni() < 100000000) {
-            if (getDummyEntitie(dummy.getDni())== null) {
-                DummyEntitie dummyEntitie = modelMapper.map(dummy, DummyEntitie.class);
-                dummyRepository.save(dummyEntitie);
-                return modelMapper.map(dummyEntitie, Dummy.class);
-            }
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Ya existe un Dummy con DNI " + dummy.getDni());
+            return VerifyDummyExist(dummy);
 
         }
         else {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "El dummy tiene el DNI demasiado largo");
         }
+    }
+
+    private Dummy VerifyDummyExist(Dummy dummy) {
+        if (getDummyEntitieByDni(dummy.getDni())== null) {
+            if (getDummyEntitieByMail(dummy.getEmail())==null) {
+                DummyEntitie dummyEntitie = modelMapper.map(dummy, DummyEntitie.class);
+                dummyRepository.save(dummyEntitie);
+                return modelMapper.map(dummyEntitie, Dummy.class);
+            }
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Ya existe un Dummy con el mail " + dummy.getEmail());
+
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Ya existe un Dummy con DNI " + dummy.getDni());
     }
 
     /**
